@@ -35,4 +35,7 @@ jobs:
         env:
           PORT: ${{ vars.PORT }}
         run: |
-          npm run start
+          node index.js &
+          sleep 5
+          curl -I http://localhost:${{ vars.PORT }}
+          kill $(lsof -t -i:${{ vars.PORT }})
