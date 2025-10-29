@@ -23,16 +23,16 @@ jobs:
         with:
           ref: ${{ github.sha}}
 
-
       - name: install node modules
         id: installNodeModules
         shell: bash
         run: |
           npm install
-    
 
       - name: run project
         id: runProject
         shell: bash
+        env:
+          PORT: ${{ vars.PORT }}
         run: |
           npm run start
