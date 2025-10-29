@@ -1,0 +1,38 @@
+name: action de base
+
+on:
+  push: ~
+  workflow_dispatch: ~
+
+jobs:
+  gitHubInfos:
+    name: Get GitHub infos
+    runs-on: ubuntu-latest
+    steps:
+      - name: "git hub details"
+        id: github_details
+        shell: bash
+        run: |
+          echo ${GITHUB_CONTEXT}
+
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+
+      - name: checkout
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha}}
+
+
+      - name: install node modules
+        id: installNodeModules
+        shell: bash
+        run: |
+          npm install
+    
+
+      - name: run project
+        id: runProject
+        shell: bash
+        run: |
+          npm run start
