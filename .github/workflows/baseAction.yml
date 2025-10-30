@@ -59,6 +59,11 @@ jobs:
         run: |
           make build
 
+      - name: add-build-to-summary
+        shell: bash
+        run: |
+          echo "Build : tout est OK" >> $GITHUB_STEP_SUMMARY
+
       - name: upload artifact
         uses: actions/upload-artifact@v4
         with:
