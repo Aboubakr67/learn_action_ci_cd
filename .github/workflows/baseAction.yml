@@ -2,7 +2,17 @@ name: action de base
 
 on:
   push: ~
-  workflow_dispatch: ~
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Choix du déploiement"
+        required: true
+        type: choice
+        options:
+          - develop
+          - pre-prod
+          - prod
+        default: develop
 
 jobs:
   gitHubInfos:
@@ -23,11 +33,26 @@ jobs:
         with:
           ref: ${{ github.sha}}
 
+      # ✅ Ajout du cache pour node_modules
+      - name: Cache des dépendances Node
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: install node modules
         id: installNodeModules
         shell: bash
         run: |
           npm install
+
+      - name: Afficher les entrées utilisateur
+        shell: bash
+        run: |
+          echo "📦 Environnement choisi : ${{ github.event.inputs.environment }}"
 
       - name: run project
         id: runProject
