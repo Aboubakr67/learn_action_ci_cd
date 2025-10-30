@@ -70,15 +70,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: Build
 
-
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v5
 
         with:
-          name: project-build
+          name: build-artifact
           path: dist
 
       - name: "check"
-        run : |
+        run: |
           ls -l
