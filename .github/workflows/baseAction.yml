@@ -85,4 +85,16 @@ jobs:
 
       - name: "check"
         run: |
-          ls -l
+          cd  dist && ls -l
+
+      - name: variable-output
+        id: variable-output
+        run: |
+          echo "::set-output name=testvar::coucou"
+
+      - name: step-content
+        run: echo ${{ steps.variable-output }}
+
+      - name: variable-print
+        run: |
+          echo ${{ steps.variable-output.outputs.testvar }}
