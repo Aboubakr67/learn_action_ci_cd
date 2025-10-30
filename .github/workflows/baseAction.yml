@@ -15,7 +15,7 @@ on:
         default: develop
 
 jobs:
-  gitHubInfos:
+  Build:
     name: Get GitHub infos
     runs-on: ubuntu-latest
     steps:
@@ -33,7 +33,6 @@ jobs:
         with:
           ref: ${{ github.sha}}
 
-      # ✅ Ajout du cache pour node_modules
       - name: Cache des dépendances Node
         uses: actions/cache@v4
         with:
@@ -54,13 +53,32 @@ jobs:
         run: |
           echo "📦 Environnement choisi : ${{ github.event.inputs.environment }}"
 
-      - name: run project
-        id: runProject
+      - name: build project
+        id: buildProject
         shell: bash
-        env:
-          PORT: ${{ vars.PORT }}
         run: |
-          node index.js &
-          sleep 5
-          curl -I http://localhost:${{ vars.PORT }}
-          kill $(lsof -t -i:${{ vars.PORT }})
+          make build
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: dist
+
+  Download:
+    name: Download artifact
+    runs-on: ubuntu-latest
+    needs: Build
+
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v5
+
+        with:
+          name: project-build
+          path: dist
+
+      - name: "check"
+        run : |
+          ls -l
