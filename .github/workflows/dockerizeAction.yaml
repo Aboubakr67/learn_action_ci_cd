@@ -1,0 +1,23 @@
+name: Make Docker image
+
+on:
+    workflow_dispatch: ~
+
+
+jobs:
+  make-docker:
+    name: build-image
+    runs-on: ubuntu-latest
+
+    steps:
+        - name: checkout
+          id: checkout
+          uses: actions/checkout@v5
+          with:
+            ref: ${{ github.sha}}
+
+        - name: build image
+          id: build-image
+          shell: bash
+          run: |
+            docker build -t Aboubakr67/learn_action_ci_cd:latest .
